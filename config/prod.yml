@@ -1,0 +1,22 @@
+app:
+  ip    : 0.0.0.0
+  port  : 8000
+  sock  : /tmp/my_app.sock
+  conn  : sock # sock | ip
+  upload: /path/to/static/upload/dir
+  secret: application_secret
+  title : my app title
+  tz    : Australia/Sydney
+db:
+  user: root
+  pass: root
+  name: muxapi
+  host: 127.0.0.1
+  port: 3306
+  sock: /var/run/mysqld/mysqld.sock
+  conn: sock # sock | ip
+mail:
+  host: 127.0.0.1
+  port: 25
+  user: test
+  pass: test
