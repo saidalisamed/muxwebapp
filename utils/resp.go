@@ -5,13 +5,13 @@ import (
 	"net/http"
 )
 
-// RespondWithError responds to user with error message
-func RespondWithError(w http.ResponseWriter, code int, message string) {
-	RespondWithJSON(w, code, map[string]string{"error": message})
+// ErrorResp responds error message in JSON format
+func ErrorResp(w http.ResponseWriter, code int, message string) {
+	JSONResp(w, code, map[string]string{"error": message})
 }
 
-// RespondWithJSON responds to use with JSON content
-func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+// JSONResp responds in JSON format
+func JSONResp(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 
 	w.Header().Set("Content-Type", "application/json")
