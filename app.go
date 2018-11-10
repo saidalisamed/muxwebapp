@@ -64,8 +64,8 @@ func (a *App) readConfig(env string) {
 	if env == "prod" {
 		configName = "prod"
 	} else {
-		configName = "dev"
 		env = "dev"
+		configName = env
 	}
 
 	viper.SetConfigName(configName) // name of config file (without extension)
