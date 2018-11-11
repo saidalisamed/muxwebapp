@@ -36,7 +36,9 @@ func (a *App) Init(env string) {
 	a.initSession()
 
 	a.Router = mux.NewRouter()
+	a.configureStatic()
 	a.configureRoutes()
+	a.configureTemplates()
 }
 
 // Run starts the application
@@ -115,13 +117,31 @@ func (a *App) initSession() {
 	a.Store = sessions.NewCookieStore([]byte(a.Cfg.App.Secret))
 }
 
+func (a *App) configureStatic() {
+	dir := "res/assets"
+	fs := http.FileServer(http.Dir(dir))
+	// or use github.com/yosssi/go-fileserver for faster performance and caching
+	// fs := fileserver.New(fileserver.Options{}).Serve(http.Dir(dir))
+
+	a.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+}
+
 // Setup routes
 func (a *App) configureRoutes() {
-	a.Router.HandleFunc("/products", a.getProducts).Methods("GET")
-	a.Router.HandleFunc("/product", a.createProduct).Methods("POST")
-	a.Router.HandleFunc("/product/{id:[0-9]+}", a.getProduct).Methods("GET")
-	a.Router.HandleFunc("/product/{id:[0-9]+}", a.updateProduct).Methods("PUT")
-	a.Router.HandleFunc("/product/{id:[0-9]+}", a.deleteProduct).Methods("DELETE")
-	a.Router.HandleFunc("/session/set", a.sessionSet).Methods("GET")
-	a.Router.HandleFunc("/session/get", a.sessionGet).Methods("GET")
+	// Product routes
+	productRoutes := a.Router.PathPrefix("/product").Subrouter()
+	productRoutes.HandleFunc("/all", a.getProducts).Methods("GET")
+	productRoutes.HandleFunc("/create", a.createProduct).Methods("POST")
+	productRoutes.HandleFunc("/{id:[0-9]+}", a.getProduct).Methods("GET")
+	productRoutes.HandleFunc("/{id:[0-9]+}", a.updateProduct).Methods("PUT")
+	productRoutes.HandleFunc("/{id:[0-9]+}", a.deleteProduct).Methods("DELETE")
+
+	// Session routes
+	sessionRoutes := a.Router.PathPrefix("/session").Subrouter()
+	sessionRoutes.HandleFunc("/set", a.sessionSet).Methods("GET")
+	sessionRoutes.HandleFunc("/get", a.sessionGet).Methods("GET")
+}
+
+func (a *App) configureTemplates() {
+	// TODO: complete this method
 }
