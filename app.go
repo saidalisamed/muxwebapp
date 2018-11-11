@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"muxwebapp/config"
+	"muxwebapp/utils"
 	"net"
 	"net/http"
 	"os"
@@ -13,6 +14,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"github.com/spf13/viper"
 )
 
@@ -21,6 +23,7 @@ type App struct {
 	Router *mux.Router
 	DB     *sql.DB
 	Cfg    *config.Configuration
+	Store  *sessions.CookieStore
 }
 
 // Init initializes the application
@@ -29,6 +32,8 @@ func (a *App) Init(env string) {
 	a.readConfig(env)
 
 	a.initDB()
+
+	a.initSession()
 
 	a.Router = mux.NewRouter()
 	a.configureRoutes()
@@ -99,6 +104,17 @@ func (a *App) initDB() {
 	}
 }
 
+// Initialize sessions
+func (a *App) initSession() {
+	if a.Cfg.App.Secret == "" {
+		token, err := utils.GenerateRandomString(32)
+		a.Cfg.App.Secret = token
+		utils.CheckErr(err, "Secret:")
+	}
+
+	a.Store = sessions.NewCookieStore([]byte(a.Cfg.App.Secret))
+}
+
 // Setup routes
 func (a *App) configureRoutes() {
 	a.Router.HandleFunc("/products", a.getProducts).Methods("GET")
@@ -106,4 +122,6 @@ func (a *App) configureRoutes() {
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.getProduct).Methods("GET")
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.updateProduct).Methods("PUT")
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.deleteProduct).Methods("DELETE")
+	a.Router.HandleFunc("/session/set", a.sessionSet).Methods("GET")
+	a.Router.HandleFunc("/session/get", a.sessionGet).Methods("GET")
 }
