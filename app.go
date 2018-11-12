@@ -38,7 +38,7 @@ func (a *App) Init(env string) {
 	a.initSession()
 
 	a.Router = mux.NewRouter()
-	a.configureStatic()
+	a.configureStatic("res/assets", "/static/")
 	a.configureRoutes()
 	a.parseTemplates("res/templates/*")
 }
@@ -119,13 +119,12 @@ func (a *App) initSession() {
 	a.Store = sessions.NewCookieStore([]byte(a.Cfg.App.Secret))
 }
 
-func (a *App) configureStatic() {
-	dir := "res/assets"
+func (a *App) configureStatic(dir string, pathPrefix string) {
 	fs := http.FileServer(http.Dir(dir))
 	// or use github.com/yosssi/go-fileserver for faster performance and caching
 	// fs := fileserver.New(fileserver.Options{}).Serve(http.Dir(dir))
 
-	a.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+	a.Router.PathPrefix(pathPrefix).Handler(http.StripPrefix(pathPrefix, fs))
 }
 
 func (a *App) parseTemplates(path string) {
