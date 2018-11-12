@@ -10,7 +10,7 @@ func (a *App) templateDemo(w http.ResponseWriter, r *http.Request) {
 		"title": a.Cfg.App.Title,
 	}
 
-	if err := a.Templ.ExecuteTemplate(w, "template_demo", m); err != nil {
+	if err := a.Templ.ExecuteTemplate(w, "demo_template", m); err != nil {
 		log.Println(err)
 	}
 }

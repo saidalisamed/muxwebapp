@@ -10,7 +10,7 @@ app:
 db:
   user: root
   pass: root
-  name: muxapi
+  name: muxwebapp
   host: 127.0.0.1
   port: 3306
   sock: /var/run/mysqld/mysqld.sock
