@@ -18,3 +18,10 @@ func JSONResp(w http.ResponseWriter, code int, payload interface{}) {
 	w.WriteHeader(code)
 	w.Write(response)
 }
+
+// TextResp response in plain text
+func TextResp(w http.ResponseWriter, code int, text string) {
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(code)
+	w.Write([]byte(text))
+}

@@ -14,6 +14,7 @@ import (
 	"syscall"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/spf13/viper"
@@ -38,13 +39,17 @@ func (a *App) Init(env string) {
 	a.initSession()
 
 	a.Router = mux.NewRouter()
+	a.configureMiddlewares()
 	a.configureStatic("res/assets", "/static/")
 	a.configureRoutes()
 	a.parseTemplates("res/templates/*")
 }
 
 // Run starts the application
-func (a *App) Run() {
+func (a App) Run() {
+	// Enable logging
+	loggedRouter := handlers.LoggingHandler(os.Stdout, a.Router)
+
 	if a.Cfg.App.Conn == "sock" {
 		socket, err := net.Listen("unix", a.Cfg.App.Sock)
 		if err != nil {
@@ -60,10 +65,10 @@ func (a *App) Run() {
 				os.Exit(0)
 			}(sigc)
 
-			log.Fatal(http.Serve(socket, a.Router))
+			log.Fatal(http.Serve(socket, handlers.RecoveryHandler()(loggedRouter)))
 		}
 	} else {
-		log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", a.Cfg.App.IP, a.Cfg.App.Port), a.Router))
+		log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", a.Cfg.App.IP, a.Cfg.App.Port), handlers.RecoveryHandler()(loggedRouter)))
 	}
 }
 
@@ -117,6 +122,12 @@ func (a *App) initSession() {
 	}
 
 	a.Store = sessions.NewCookieStore([]byte(a.Cfg.App.Secret))
+}
+
+// Plugs in various middlewares
+func (a *App) configureMiddlewares() {
+	// Use middlewares
+	// a.Router.Use(someMiddleware)
 }
 
 func (a *App) configureStatic(dir string, pathPrefix string) {
