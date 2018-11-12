@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
 	"log"
 	"muxwebapp/config"
 	"muxwebapp/utils"
@@ -24,6 +25,7 @@ type App struct {
 	DB     *sql.DB
 	Cfg    *config.Configuration
 	Store  *sessions.CookieStore
+	Templ  *template.Template
 }
 
 // Init initializes the application
@@ -38,7 +40,7 @@ func (a *App) Init(env string) {
 	a.Router = mux.NewRouter()
 	a.configureStatic()
 	a.configureRoutes()
-	a.configureTemplates()
+	a.parseTemplates("res/templates/*")
 }
 
 // Run starts the application
@@ -126,22 +128,11 @@ func (a *App) configureStatic() {
 	a.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 }
 
-// Setup routes
-func (a *App) configureRoutes() {
-	// Product routes
-	productRoutes := a.Router.PathPrefix("/product").Subrouter()
-	productRoutes.HandleFunc("/all", a.getProducts).Methods("GET")
-	productRoutes.HandleFunc("/create", a.createProduct).Methods("POST")
-	productRoutes.HandleFunc("/{id:[0-9]+}", a.getProduct).Methods("GET")
-	productRoutes.HandleFunc("/{id:[0-9]+}", a.updateProduct).Methods("PUT")
-	productRoutes.HandleFunc("/{id:[0-9]+}", a.deleteProduct).Methods("DELETE")
-
-	// Session routes
-	sessionRoutes := a.Router.PathPrefix("/session").Subrouter()
-	sessionRoutes.HandleFunc("/set", a.sessionSet).Methods("GET")
-	sessionRoutes.HandleFunc("/get", a.sessionGet).Methods("GET")
-}
-
-func (a *App) configureTemplates() {
-	// TODO: complete this method
+func (a *App) parseTemplates(path string) {
+	templ := template.New("")
+	_, err := templ.ParseGlob(path)
+	if err != nil {
+		log.Println(err)
+	}
+	a.Templ = templ
 }

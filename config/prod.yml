@@ -5,7 +5,7 @@ app:
   conn  : sock # sock | ip
   upload: /path/to/static/upload/dir
   secret: application_secret
-  title : my app title
+  title : My App
   tz    : Australia/Sydney
 db:
   user: root
