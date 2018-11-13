@@ -6,6 +6,9 @@ import (
 )
 
 func (a *App) sessionSet(w http.ResponseWriter, r *http.Request) {
+	// We need this to avoid memory leak
+	defer context.Clear(r)
+
 	session, _ := a.Store.Get(r, "login")
 	session.Values["foo"] = "bar"
 	session.Values[42] = 43
@@ -15,6 +18,9 @@ func (a *App) sessionSet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) sessionGet(w http.ResponseWriter, r *http.Request) {
+	// We need this to avoid memory leak
+	defer context.Clear(r)
+
 	session, _ := a.Store.Get(r, "login")
 	foo := session.Values["foo"]
 
