@@ -3,7 +3,7 @@
 1. Build for linux (Ubuntu) architecture amd64:
  ```shell
  cd <PROJECT>/
- env GOOS=linux GOARCH=amd64 go build -o webapp -v
+ GOOS=linux GOARCH=amd64 go build -o webapp -v
  ```
 2. Copy your project excluding the Go source `*.go` to your server in `/var/www/html/<PROJECT>`.
  ```shell
