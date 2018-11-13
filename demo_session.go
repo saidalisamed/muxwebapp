@@ -3,6 +3,8 @@ package main
 import (
 	"muxwebapp/utils"
 	"net/http"
+
+	"github.com/gorilla/context"
 )
 
 func (a *App) sessionSet(w http.ResponseWriter, r *http.Request) {
