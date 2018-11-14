@@ -19,7 +19,7 @@ type App struct {
 	Tz     string
 }
 
-// DB specific configruation
+// DB specific configuration
 type DB struct {
 	User string
 	Pass string
