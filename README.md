@@ -2,29 +2,29 @@
 ## Deployment Notes
 1. Build for linux (Ubuntu) architecture amd64:
  ```shell
- cd <PROJECT>/
- GOOS=linux GOARCH=amd64 go build -o webapp -v
+ cd /path/to/<PROJECT>/
+ GOOS=linux GOARCH=amd64 go build -o <PROJECT> -v
  ```
 2. Copy your project excluding the Go source `*.go` to your server in `/var/www/html/<PROJECT>`.
  ```shell
- rsync -azv --exclude '*.go' ../<PROJECT> user@example.com:~/var/www/html/
+ rsync -azv 'ssh -i /path/to/.pem' --exclude '*.go' --exclude 'debug' --exclude '.gitignore' ../<PROJECT> user@example.com:/var/www/html/
  ```
 3. Configure supervisor to run the app.
  ```shell
  sudo vim /etc/supervisor/conf.d/<PROJECT>.conf
 
  # add the following
- [program:<PROJECT>webapp]
+ [program:<PROJECT>]
  environment =
     ENV=prod,
- command=/var/www/html/<PROJECT>/webapp
+ command=/var/www/html/<PROJECT>/<PROJECT>
  autostart=true
  autorestart=true
  startretries=10
  user=www-data
  directory=/var/www/html/<PROJECT>/
  redirect_stderr=true
- stdout_logfile=/var/log/supervisor/<PROJECT>webapp.log
+ stdout_logfile=/var/log/supervisor/<PROJECT><PROJECT>.log
  stdout_logfile_maxbytes=50MB
  stdout_logfile_backups=10
 
