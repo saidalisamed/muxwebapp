@@ -1,6 +1,6 @@
 package main
 
-// Setup routes
+// Configure routes
 func (a *App) configureRoutes() {
 	// DB demo routes
 	productRoutes := a.Router.PathPrefix("/product").Subrouter()
@@ -16,4 +16,7 @@ func (a *App) configureRoutes() {
 	sessionRoutes.HandleFunc("/get", a.sessionGet).Methods("GET")
 
 	a.Router.HandleFunc("/template", a.templateDemo).Methods("GET")
+
+	// Index path / being the least specific is mentioned last
+	a.Router.HandleFunc("/", a.indexDemo).Methods("GET")
 }
