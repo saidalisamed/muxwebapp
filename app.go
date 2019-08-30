@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"html/template"
 	"log"
-	"muxwebapp/config"
-	"muxwebapp/utils"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/saidalisamed/muxwebapp/config"
+	"github.com/saidalisamed/muxwebapp/utils"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/handlers"

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"muxwebapp/utils"
 	"net/http"
+
+	"github.com/saidalisamed/muxwebapp/utils"
 
 	"github.com/gorilla/context"
 )
