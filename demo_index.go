@@ -10,7 +10,7 @@ func (a *App) indexDemo(w http.ResponseWriter, r *http.Request) {
 		"title": a.Cfg.App.Title,
 	}
 
-	if err := a.Templ.ExecuteTemplate(w, "demo_index", m); err != nil {
+	if err := a.Template.ExecuteTemplate(w, "demo_index", m); err != nil {
 		log.Println(err)
 	}
 }

@@ -7,7 +7,7 @@ GOOS=linux GOARCH=amd64 go build -o <PROJECT> -v
 ```
 2. Copy your project excluding the Go source `*.go` to your server in `/var/www/html/<PROJECT>`.
 ```shell
-rsync -azv 'ssh -i /path/to/.pem' --exclude '*.go' --exclude 'debug' --exclude '.gitignore' ../<PROJECT> user@example.com:/var/www/html/
+rsync -azv -e 'ssh -i /path/to/.pem' --exclude '*.go' --exclude 'debug' --exclude '.gitignore' --exclude '.git' --exclude '.vscode' ../<PROJECT> user@example.com:/var/www/html/
 ```
 3. Configure supervisor to run the app.
 ```shell
@@ -27,6 +27,7 @@ redirect_stderr=true
 stdout_logfile=/var/log/supervisor/<PROJECT>.log
 stdout_logfile_maxbytes=50MB
 stdout_logfile_backups=10
+
 
 # reload supervisor
 sudo supervisorctl reload
@@ -50,6 +51,7 @@ server {
       proxy_pass http://<PROJECT>;
    }
 }
+
 
 # enable the website configuration
 sudo ln -s /etc/nginx/sites-available/<PROJECT>.conf /etc/nginx/sites-enabled

@@ -23,11 +23,11 @@ import (
 
 // App main structure
 type App struct {
-	Router *mux.Router
-	DB     *sql.DB
-	Cfg    *config.Configuration
-	Store  *sessions.CookieStore
-	Templ  *template.Template
+	Router   *mux.Router
+	DB       *sql.DB
+	Cfg      *config.Configuration
+	Store    *sessions.CookieStore
+	Template *template.Template
 }
 
 // Init initializes the application
@@ -140,10 +140,10 @@ func (a *App) configureStatic(dir string, pathPrefix string) {
 }
 
 func (a *App) parseTemplates(path string) {
-	templ := template.New("")
-	_, err := templ.ParseGlob(path)
+	template := template.New("")
+	_, err := template.ParseGlob(path)
 	if err != nil {
 		log.Println(err)
 	}
-	a.Templ = templ
+	a.Template = template
 }
