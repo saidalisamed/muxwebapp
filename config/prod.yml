@@ -1,11 +1,11 @@
 app:
   ip    : 0.0.0.0
   port  : 8000
-  sock  : /tmp/my_app.sock
+  sock  : /tmp/muxwebapp.sock
   conn  : sock # sock | ip
   upload: /path/to/static/upload/dir
   secret: application_secret
-  title : My App
+  title : Mux Web App
   tz    : Australia/Sydney
 db:
   user: root

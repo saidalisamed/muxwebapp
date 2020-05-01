@@ -56,6 +56,11 @@ func (a App) Run() {
 		if err != nil {
 			log.Printf("%s", err)
 		} else {
+			// Make socket file group writable
+			if err := os.Chmod(a.Cfg.App.Sock, 0770); err != nil {
+				log.Fatal(err)
+			}
+
 			// Graceful shutdown. Unlink unix socket on exit
 			sigc := make(chan os.Signal, 1)
 			signal.Notify(sigc, os.Interrupt, os.Kill, syscall.SIGTERM)
